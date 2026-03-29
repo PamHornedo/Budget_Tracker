@@ -100,12 +100,19 @@ class Transaction:
         if not self.id:
             print("❌ Cannot delete transaction without ID")
             return False
-            
-        # TODO: Implement delete method
-        # Write SQL DELETE query
-        # Use self.db.execute_update()
         
-        pass  # Remove when implemented
+        self.db.connect()
+
+        try:
+            query = "DELETE FROM transactions WHERE id = %s"
+            self.db.execute_update(query, (self.id,))
+            return True
+        
+        except Exception as e:
+            print(f"Cannot delete transaction: {e}")
+            return False
+        finally:
+            self.db.disconnect()
     
     def validate(self):
         """

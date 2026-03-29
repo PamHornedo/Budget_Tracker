@@ -162,19 +162,33 @@ class Transaction:
         # Order by transaction_date DESC
         
         query = """
-        -- TODO: Write your SELECT query here
-        -- Include: t.id, t.amount, t.description, t.transaction_date, t.type, c.name as category_name
-        -- FROM transactions t LEFT JOIN categories c ON t.category_id = c.id
-        -- ORDER BY t.transaction_date DESC
+        SELECT 
+            t.id, 
+            t.amount, 
+            t.description, 
+            t.transaction_date, 
+            t.type
+        FROM transactions t
+        LEFT JOIN categories c ON t.category_id = c.id
+        ORDER BY t.transaction_date DESC
         """
         
         results = db.execute_query(query)
         db.disconnect()
         
         transactions = []
-        # TODO: Convert database results to Transaction objects
-        # Loop through results and create Transaction instances
-        
+
+        for row in results:
+            transaction = Transaction(
+                amount=row['amount'] if isinstance(row, dict) else row[1],
+                description=row['description'] if isinstance(row, dict) else row[2],
+                transaction_date=row['transaction_date'] if isinstance(row, dict) else row[3],
+                category_id=row['category_id'] if isinstance(row, dict) else row[4],
+                transaction_type=row['type'] if isinstance(row, dict) else row[5],
+                transaction_id=row['id'] if isinstance(row, dict) else row[0]
+            )
+            transactions.append(transaction)
+    
         return transactions
     
     @staticmethod

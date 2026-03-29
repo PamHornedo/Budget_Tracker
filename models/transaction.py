@@ -121,13 +121,6 @@ class Transaction:
         Returns:
             bool: True if valid, False otherwise
         """
-        # TODO: Implement validation
-        # Check that:
-        # - amount is positive Decimal or float
-        # - description is not empty
-        # - transaction_date is a valid date
-        # - type is 'income' or 'expense'
-        # - category_id exists in database (optional check)
 
         try:
             if self.amount is None or Decimal(self.amount) <= 0:
@@ -145,6 +138,12 @@ class Transaction:
             if self.type not in ['income', 'expense']:
                 print("Type must be 'income' or 'expense'")
                 return False
+            
+            return True
+        
+        except Exception as e:
+            print(f"Validation error: {e}")
+            return False
 
     
     @staticmethod

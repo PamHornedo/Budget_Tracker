@@ -202,10 +202,31 @@ class Transaction:
         Returns:
             Transaction: Transaction object or None if not found
         """
-        # TODO: Implement get_by_id
-        # Similar to get_all() but with WHERE clause
-        
-        pass
+        db = DatabaseConnection()
+        db.connect()
+
+        query = """
+            SELECT id, amount, description, transaction_date, category_id, type
+            FROM transactions
+            WHERE id = %s
+        """
+    
+        result = db.execute_query(query, (transaction_id,))
+        db.disconnect()
+            
+        if not result:
+            return None
+            
+        row = result[0]
+
+        return Transaction(
+            amount=row['amount'] if isinstance(row, dict) else row[1],
+            description=row['description'] if isinstance(row, dict) else row[2],
+            transaction_date=row['transaction_date'] if isinstance(row, dict) else row[3],
+            category_id=row['category_id'] if isinstance(row, dict) else row[4],
+            transaction_type=row['type'] if isinstance(row, dict) else row[5],
+            transaction_id=row['id'] if isinstance(row, dict) else row[0]
+            )
     
     @staticmethod
     def get_by_type(transaction_type):

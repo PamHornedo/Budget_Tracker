@@ -3,7 +3,6 @@
 Transaction Model
 Handles transaction data operations and validation
 
-TODO: Complete the Transaction class with CRUD operations
 """
 
 from datetime import date, datetime
@@ -43,9 +42,6 @@ class Transaction:
         Returns:
             bool: True if successful, False otherwise
         """
-        # TODO: Implement save method
-        # If self.id exists, UPDATE existing transaction
-        # If self.id is None, INSERT new transaction
         
         if not self.validate():
             return False
@@ -54,16 +50,37 @@ class Transaction:
         
         try:
             if self.id:
-                # TODO: UPDATE existing transaction
-                # Write SQL UPDATE query
-                # Use self.db.execute_update() with parameters
-                pass
+                query = """
+                    UPDATE transactions SET amount = %s, description = %s, transaction_date = %s, category_id = %s, type = %s WHERE id = %s
+                """
+                params = (
+                    self.amount,
+                    self.description,
+                    self.transaction_date,
+                    self.category_id,
+                    self.type,
+                    self.id
+                )
+
+                self.db.execute_update(query, params)
+
             else:
-                # TODO: INSERT new transaction
-                # Write SQL INSERT query with RETURNING id
-                # Use self.db.execute_query() to get the new ID
-                # Set self.id to the returned ID
-                pass
+                query = """
+                    INSERT INTO transactions (amount, description, transaction_date, category_id, type) VALUES (%s, %s, %s, %s, %s) RETURNING id
+                """
+
+                params = (
+                    self.amount,
+                    self.description,
+                    self.transaction_date,
+                    self.category_id,
+                    self.type,
+                )
+
+                result = self.db.execute_query(query, params)
+
+                if result:
+                    self.id = result[0]['id'] if isinstance(result[0], dict) else result[0]
                 
         except Exception as e:
             print(f"❌ Error saving transaction: {e}")

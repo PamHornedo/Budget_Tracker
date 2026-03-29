@@ -3,7 +3,6 @@
 Database Connection Module
 Handles PostgreSQL database connections and basic operations
 
-TODO: Complete the database connection and query functions
 """
 
 import os

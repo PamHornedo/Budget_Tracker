@@ -8,7 +8,7 @@ Handles transaction data operations and validation
 from datetime import date, datetime
 from decimal import Decimal
 from database.connection import DatabaseConnection
-
+from decimal import Decimal
 class Transaction:
     """
     Represents a financial transaction (income or expense)
@@ -128,8 +128,24 @@ class Transaction:
         # - transaction_date is a valid date
         # - type is 'income' or 'expense'
         # - category_id exists in database (optional check)
-        
-        pass  # Remove when implemented
+
+        try:
+            if self.amount is None or Decimal(self.amount) <= 0:
+                print("Amount must be positive")
+                return False
+            
+            if not self.description or not self.description.strip():
+                print("Description cannot be empty")
+                return False
+            
+            if not isinstance(self.transaction_date, (date, datetime)):
+                print("Invalid transaction date")
+                return False
+            
+            if self.type not in ['income', 'expense']:
+                print("Type must be 'income' or 'expense'")
+                return False
+
     
     @staticmethod
     def get_all():

@@ -43,21 +43,28 @@ class Category:
         
         try:
             if self.id:
-                # TODO: UPDATE existing category
                 query = """
-                -- TODO: Write UPDATE query
-                -- UPDATE categories SET name = %s, type = %s, description = %s WHERE id = %s
+                UPDATE categories SET name = %s, type = %s, description = %s WHERE id = %s
                 """
-                # Use self.db.execute_update() with parameters
-                pass
+
+                params = (
+                    self.name
+                    self.type
+                    self.description
+                    self.id
+                )
+
+                self.db.execute_update(query, params)
+
             else:
-                # TODO: INSERT new category
                 query = """
-                -- TODO: Write INSERT query with RETURNING id
-                -- INSERT INTO categories (name, type, description) VALUES (%s, %s, %s) RETURNING id
+                INSERT INTO categories (name, type, description) VALUES (%s, %s, %s) RETURNING id
                 """
-                # Use self.db.execute_query() to get the new ID
-                pass
+                params = (self.name, self.type, self.description)
+                result = self.db.execute_query(query, params)
+                
+                if result:
+                    self.id = result[0]['id'] if isinstance(result[0], dict) else result[0][0]
                 
         except Exception as e:
             print(f"❌ Error saving category: {e}")

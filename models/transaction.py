@@ -278,11 +278,33 @@ class Transaction:
         Returns:
             list: List of Transaction objects
         """
-        # TODO: Implement date range filtering
-        # Similar to get_all() but with WHERE transaction_date BETWEEN %s AND %s
+        db = DatabaseConnection()
+        db.connect()
         
-        pass
-    
+        query = """
+            SELECT id, amount, description, transaction_date, category_id, type
+            FROM transactions
+            WHERE transaction_date BETWEEN %s AND %s
+            ORDER BY transaction_date DESC
+        """
+        
+        results = db.execute_query(query, (start_date, end_date))
+        db.disconnect()
+        
+        transactions = []
+        
+        for row in results:
+            transactions.append(Transaction(
+                amount=row['amount'] if isinstance(row, dict) else row[1],
+                description=row['description'] if isinstance(row, dict) else row[2],
+                transaction_date=row['transaction_date'] if isinstance(row, dict) else row[3],
+                category_id=row['category_id'] if isinstance(row, dict) else row[4],
+                transaction_type=row['type'] if isinstance(row, dict) else row[5],
+                transaction_id=row['id'] if isinstance(row, dict) else row[0]
+            ))
+        
+        return transactions
+
     def __str__(self):
         """
         String representation of transaction

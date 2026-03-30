@@ -111,7 +111,7 @@ class Category:
                 print("Category name must be unique")
                 return False
         
-        return True
+            return True
     
         except Exception as e:
             print(f"Validation error: {e}")
@@ -120,8 +120,6 @@ class Category:
         finally:
             self.db.disconnect()
             
-
-    
     @staticmethod
     def get_all():
         """

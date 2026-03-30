@@ -198,8 +198,29 @@ class Category:
         Returns:
             Category: Category object or None if not found
         """
-        # TODO: Implement get_by_id
-        pass
+        db = DatabaseConnection()
+        db.connect()
+    
+        query = """
+            SELECT id, name, type, description
+            FROM categories
+            WHERE id = %s
+        """
+
+        result = db.execute_query(query, (category_id,))
+        db.disconnect()
+                
+        if not result:
+            return None
+                
+        row = result[0]
+
+        return Category(
+            name=row['name'] if isinstance(row, dict) else row[1],
+            category_type=row['type'] if isinstance(row, dict) else row[2],
+            description=row['description'] if isinstance(row, dict) else row[3],
+            category_id=row['id'] if isinstance(row, dict) else row[0]
+        )
     
     def get_transaction_count(self):
         """

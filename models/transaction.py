@@ -305,7 +305,8 @@ class Transaction:
         """
         String representation of transaction
         """
-        return f"{self.type.title()}: ${self.amount} - {self.description} ({self.transaction_date})"
+        type_str = self.type.title() if self.type else "Unknown"
+        return f"{type_str}: ${self.amount} - {self.description} ({self.transaction_date})"
     
     def __repr__(self):
         """

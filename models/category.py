@@ -99,9 +99,9 @@ class Category:
                 print("Type must be 'income' or 'expense'")
                 return False
             
-            query = "SELECT id FROM categories WHERE name = %s"
-            params = (self.name,)
-            result = self.db.execute_query(query, params)
+            self.db.connect()
+            query = "SELECT id FROM categories WHERE name = %s AND type = %s"
+            result = self.db.execute_query(query, (self.name, self.type))
         
             if result:
                 existing_id = result[0]['id'] if isinstance(result[0], dict) else result[0][0]
@@ -234,16 +234,16 @@ class Category:
             
         self.db.connect()
         
-        # TODO: Count transactions in this category
         query = """
-        -- TODO: COUNT transactions for this category
-        -- SELECT COUNT(*) as count FROM transactions WHERE category_id = %s
+            SELECT COUNT(*) as count 
+            FROM transactions 
+            WHERE category_id = %s
         """
         
         result = self.db.execute_query(query, (self.id,))
         self.db.disconnect()
         
-        return result[0]['count'] if result else 0
+        return result[0]['count'] if isinstance(result[0], dict) else result[0][0] if result else 0    
     
     def delete(self):
         """

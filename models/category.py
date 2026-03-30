@@ -265,11 +265,20 @@ class Category:
             if response.lower() != 'y':
                 print("❌ Delete cancelled")
                 return False
+            
+        self.db.connect()
+
+        try:
+            query = "DELETE FROM categories WHERE id = %s"
+            self.db.execute_update(query, (self.id,))
+            return True
         
-        # TODO: Implement delete
-        # DELETE FROM categories WHERE id = %s
+        except Exception as e:
+            print(f"Cannot delete category: {e}")
+            return False
+        finally:
+            self.db.disconnect()
         
-        pass
     
     def __str__(self):
         """

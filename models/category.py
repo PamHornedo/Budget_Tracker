@@ -44,7 +44,11 @@ class Category:
         try:
             if self.id:
                 query = """
-                UPDATE categories SET name = %s, type = %s, description = %s WHERE id = %s
+                UPDATE categories 
+                SET name = %s, 
+                    type = %s, 
+                    description = %s 
+                WHERE id = %s
                 """
 
                 params = (
@@ -81,11 +85,6 @@ class Category:
         Returns:
             bool: True if valid, False otherwise
         """
-        # TODO: Implement validation
-        # Check that:
-        # - name is not empty and unique
-        # - type is 'income' or 'expense'
-        # - name length is reasonable (< 50 characters)
         
         try:
             if not self.name or not self.name.strip():
@@ -131,18 +130,24 @@ class Category:
         db = DatabaseConnection()
         db.connect()
         
-        # TODO: Write SQL query to get all categories
         query = """
-        -- TODO: SELECT all categories ordered by type, then name
-        -- SELECT id, name, type, description FROM categories ORDER BY type, name
+        SELECT id, name, type, description 
+        FROM categories 
+        ORDER BY type, name
         """
         
         results = db.execute_query(query)
         db.disconnect()
         
         categories = []
-        # TODO: Convert results to Category objects
-        # Loop through results and create Category instances
+
+        for row in results:
+            categories.append(Category(
+            name=row['name'] if isinstance(row, dict) else row[1],
+            category_type=row['type'] if isinstance(row, dict) else row[2],
+            description=row['description'] if isinstance(row, dict) else row[3],
+            category_id=row['id'] if isinstance(row, dict) else row[0]
+        ))
         
         return categories
     

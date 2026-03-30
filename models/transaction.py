@@ -156,11 +156,7 @@ class Transaction:
         """
         db = DatabaseConnection()
         db.connect()
-        
-        # TODO: Write SQL query to get all transactions
-        # JOIN with categories to get category name
-        # Order by transaction_date DESC
-        
+
         query = """
         SELECT 
             t.id, 

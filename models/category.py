@@ -162,10 +162,30 @@ class Category:
         Returns:
             list: List of Category objects
         """
-        # TODO: Implement type filtering
-        # Similar to get_all() but with WHERE type = %s
+        db = DatabaseConnection()
+        db.connect()
+
+        query = """
+            SELECT id, name, type, description
+            FROM categories
+            WHERE type = %s
+            ORDER BY name
+        """
+
+        results = db.execute_query(query, (category_type,))
+        db.disconnect()
         
-        pass
+        categories = []
+
+        for row in results:
+            categories.append(Category(
+                name=row['name'] if isinstance(row, dict) else row[1],
+                category_type=row['type'] if isinstance(row, dict) else row[2],
+                description=row['description'] if isinstance(row, dict) else row[3],
+                category_id=row['id'] if isinstance(row, dict) else row[0]
+            ))
+
+        return categories
     
     @staticmethod
     def get_by_id(category_id):

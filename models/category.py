@@ -3,7 +3,6 @@
 Category Model
 Handles category data operations for organizing transactions
 
-TODO: Complete the Category class with CRUD operations
 """
 
 from database.connection import DatabaseConnection

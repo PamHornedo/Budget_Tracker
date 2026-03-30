@@ -48,9 +48,9 @@ class Category:
                 """
 
                 params = (
-                    self.name
-                    self.type
-                    self.description
+                    self.name,
+                    self.type,
+                    self.description,
                     self.id
                 )
 
@@ -87,7 +87,40 @@ class Category:
         # - type is 'income' or 'expense'
         # - name length is reasonable (< 50 characters)
         
-        pass
+        try:
+            if not self.name or not self.name.strip():
+                print("Name cannot be empty")
+                return False
+            
+            if len(self.name) > 50:
+                print("Name must be under 50 characters")
+                return False
+            
+            if self.type not in ['income', 'expense']:
+                print("Type must be 'income' or 'expense'")
+                return False
+            
+            query = "SELECT id FROM categories WHERE name = %s"
+            params = (self.name,)
+            result = self.db.execute_query(query, params)
+        
+            if result:
+                existing_id = result[0]['id'] if isinstance(result[0], dict) else result[0][0]
+
+            if not self.id or existing_id != self.id:
+                print("Category name must be unique")
+                return False
+        
+        return True
+    
+        except Exception as e:
+            print(f"Validation error: {e}")
+            return False
+
+        finally:
+            self.db.disconnect()
+            
+
     
     @staticmethod
     def get_all():
